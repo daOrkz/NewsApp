@@ -16,8 +16,17 @@ function queryHTTP(url, method = 'GET', body = '') {
   xhr.setRequestHeader('Content-Type', 'application/json')
 
   xhr.onload = () => {
-    const response = JSON.parse(xhr.response)
-    renderNews(response.articles)
+    if(xhr.status >= 400) {
+      getError(`Error: ${xhr.status}`, xhr)
+      return
+    } else {
+      const response = JSON.parse(xhr.response)
+      renderNews(response.articles)
+    }
+  }
+
+  xhr.onerror = () => {
+    getError(`Error: ${xhr.status}`, xhr)
   }
 
   xhr.send(JSON.stringify(body))
@@ -52,6 +61,11 @@ function createURLaaaaaaaaa(country = 'us', category = '') {
 }
 
 function renderNews(newsArr) {
+  if(!newsArr.length) {
+    renderEmpty()
+    return
+  }
+
   let container = ''
   newsContainer.innerHTML = ' '
 
@@ -62,8 +76,9 @@ function renderNews(newsArr) {
   newsContainer.insertAdjacentHTML('afterbegin', container)
 }
 
-function getOneNews() {
 
+function renderEmpty() {
+  newsContainer.innerHTML = 'EMPTY'
 }
 
 function newsHTML(news) {
@@ -105,3 +120,12 @@ function clearInput() {
 document.addEventListener('DOMContentLoaded', function() {
   queryHTTP(createURL.headlines())
 })
+
+function getError(err, res) {
+  console.error(err, res)
+}
+
+
+//Обработчик пустой строки Input
+//Обработчик ошибок
+//Анимация загрузки
