@@ -74,6 +74,9 @@ function renderNews(newsArr) {
   });
 
   newsContainer.insertAdjacentHTML('afterbegin', container)
+  
+  
+  removeLoader()
 }
 
 
@@ -94,6 +97,7 @@ function newsHTML(news) {
 
 form.onsubmit = (e) => {
   e.preventDefault()
+  showLoader()
   const formValue = getFormValue()
 
   if(formValue.serchNewsValue) {
@@ -118,14 +122,32 @@ function clearInput() {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+  showLoader()
   queryHTTP(createURL.headlines())
 })
+
 
 function getError(err, res) {
   console.error(err, res)
 }
 
+function showLoader() {
+  const container = `
+    <div id="circleG">
+      <div id="circleG_1" class="circleG"></div>
+      <div id="circleG_2" class="circleG"></div>
+      <div id="circleG_3" class="circleG"></div>
+    </div>
+  `
+  form.insertAdjacentHTML('beforebegin', container)
+}
 
+function removeLoader() {
+  const loader = document.getElementById('circleG')
+  if(loader) {
+    loader.remove()
+  }
+}
 //Обработчик пустой строки Input
 //Обработчик ошибок
 //Анимация загрузки
